@@ -8,16 +8,21 @@ namespace Demo.PlayerSpace
 {
     public class ScoreKeeper : MonoBehaviour, ILevelCompleter
     {
-        [SerializeField] int maxMultiplier = 3;
+        [SerializeField] int startingMaxMultiplier = 3;
         [SerializeField] float multiplierTimer = 5.0f;
         [SerializeField] int maxStreak = 5;
-        private int score = 0;
-        private bool isMultiplying = false;
-        private int scoreMultiplier = 0;
-        private float currentTimer;
-        private int streak = 0;
-        private bool hasStreak = false;
-        private GameObject spawner;
+        private int _maxMultiplier;
+        private int _score = 0;
+        private int _scoreMultiplier = 1;
+        private int _streak = 0;
+        private int _targetBonus;
+        private bool _isMultiplying = false;
+        private bool _hasHalfBonus = false;
+        private float _currentTimer;
+        private bool _hasStreak = false;
+        private GameObject _spawner;
+
+        //recieves score increases from other objects
         public void IncreaseScore(int pointValue)
         {
             ApplyMultiplier(pointValue);
@@ -25,12 +30,12 @@ namespace Demo.PlayerSpace
 
         public int GetScore()
         {
-            return score;
+            return _score;
         }
 
         public int GetMultiplier()
         {
-            return scoreMultiplier;
+            return _scoreMultiplier;
         }
         public void CompleteLevel()
         {
@@ -42,103 +47,128 @@ namespace Demo.PlayerSpace
         
         }
 
+        public void HalfWayBonus()
+        {
+            
+            if (_streak >= maxStreak)
+            {
+                _hasHalfBonus = true;
+            }
+            
+        }
+
+        //informs this object that the streak is broken and sets the streak to zero
         public void BreakStreak()
         {
-            Debug.Log("ScoreKeeper broke streak");
-            streak = 0;
-            hasStreak = false;
+            _streak = 0;
+            _hasStreak = false;
         }
 
         public float GetMultiplierTimer()
         {
-            return currentTimer;
+            return _currentTimer;
         }
         public float GetTimerFraction()
         {
-            return currentTimer/multiplierTimer;
+            return _currentTimer/multiplierTimer;
         }
+
+        //each increases the streak to increase the score 
         public void SetStreak(int value)
         {
-            streak += value;
-            if (streak >= 3)
+            _streak += value;
+            if (_streak >= 2)
             {
-                hasStreak = true;
+                _hasStreak = true;
             }
 
-            if (streak > maxStreak)
+            if (_streak > maxStreak)
             {
-                streak = maxStreak;
+                _streak = maxStreak;
             }
         }
 
         public int GetStreak()
         {
-            return streak;
+            if (_hasStreak)
+            {
+                return _streak;
+            }
+            else
+            {
+                return 1;
+            }
         }
 
         private void Start() 
         {
-            spawner = GameObject.FindGameObjectWithTag("ScoreSpawner");
-            currentTimer = 0.0f;
+            _maxMultiplier = startingMaxMultiplier;
+            _spawner = GameObject.FindGameObjectWithTag("ScoreSpawner");
+            _currentTimer = 0.0f;
         }
         private void ApplyMultiplier(int pointValue)
         {
-            if (!isMultiplying)
+            if (!_isMultiplying)
             {
-                score += pointValue; 
-                scoreMultiplier = 1;
-                ReportScoreEvent(pointValue, scoreMultiplier);
+                _scoreMultiplier = 1;
+                _streak = 0;
+                _score += pointValue; 
+                ReportScoreEvent(pointValue, _scoreMultiplier, _streak);
                 SetTimer();
-                isMultiplying = true;
+                _isMultiplying = true;
 
                 return;
             }
 
-            else if (isMultiplying)
+            else if (_isMultiplying)
             {
                 SetMultiplier();
-                int multipliedValue = pointValue * scoreMultiplier;
-                score += multipliedValue; 
-                ReportScoreEvent(multipliedValue, scoreMultiplier);
+                int multipliedValue = pointValue * (_scoreMultiplier + _streak);
+
+                // score is increased at this point
+                _score += multipliedValue; 
+                ReportScoreEvent(pointValue, _scoreMultiplier, _streak);
                 SetTimer();
                 return;
             }
         }
 
-        private void ReportScoreEvent(int value, int multiplier)
+        private void ReportScoreEvent(int value, int multiplier, int streak)
         {
-    
-            var scoreReporter = spawner.GetComponent<IScoreReporter>();
-            scoreReporter.ScorePoints(value, multiplier);
+            var scoreReporter = _spawner.GetComponent<IScoreReporter>();
+            scoreReporter.ScorePoints(value, multiplier, streak);
         }
 
         private void SetTimer()
         {
-            currentTimer = multiplierTimer;
+            _currentTimer = multiplierTimer;
         }
 
         private void SetMultiplier()
         {
-            if (scoreMultiplier <= 0)
+            Debug.Log("half bonus is " + _hasHalfBonus);
+            if (_hasHalfBonus)
+            {
+                _maxMultiplier = startingMaxMultiplier + 1;
+            }
+            if (!_hasHalfBonus)
+            {
+                _maxMultiplier = startingMaxMultiplier;
+            }
+            //Ensures the multiplier never goes below 1
+            if (_scoreMultiplier <= 0 || !_hasStreak)
                 {
-                    scoreMultiplier = 1;
+                    _hasHalfBonus = false;
+                    _scoreMultiplier = 1;
                     return;
                 }
-
-            else if (scoreMultiplier < maxMultiplier && !hasStreak) 
+            //Applys the multiplier with each succful hit up to the max
+            else if (_scoreMultiplier < _maxMultiplier)
             {
-                scoreMultiplier++;
+                _scoreMultiplier++;
                 return;
             }
-
-            else if (scoreMultiplier < maxMultiplier && hasStreak)
-            {
-                scoreMultiplier++;
-                scoreMultiplier = scoreMultiplier + streak;
-                return;
-            }
-            
-            
+            return;
         }
 
         private void FixedUpdate() 
@@ -149,18 +179,16 @@ namespace Demo.PlayerSpace
 
         private void UpdateTimer()
         {
-            if (currentTimer > 0)
+            if (_currentTimer > 0)
             {
-                currentTimer -= Time.deltaTime;
+                _currentTimer -= Time.deltaTime;
             }
-            if (currentTimer <= 0)
+            if (_currentTimer <= 0)
             {
-                currentTimer = 0;
-                isMultiplying = false;
-                scoreMultiplier = 1;
+                _currentTimer = 0;
+                _isMultiplying = false;
+                _scoreMultiplier = 1;
             }
         }
-
-        
     }
 }

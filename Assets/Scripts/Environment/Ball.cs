@@ -42,7 +42,6 @@ namespace Demo.Environment
             }
             else
             {
-                Debug.Log("Ball hit " + other.gameObject.name);
                 scoreKeeper.BreakStreak();
                 StartCoroutine(DelayedDestroy());
             }

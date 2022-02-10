@@ -18,7 +18,6 @@ namespace Demo.PlayerSpace
         private static Vector3 point;
         private Aimer _mover;
         private Shooter _shooter;
-        private float _shootTimer;
         private bool _hasControl;
         void Start()
         {
@@ -26,7 +25,6 @@ namespace Demo.PlayerSpace
             _camera = Camera.main;
             _mover = GetComponent<Aimer>();
             _shooter = GetComponent<Shooter>();
-            _shootTimer = _shooter.GetShootTimer();
             _hasControl = true;
         }
 
@@ -36,10 +34,9 @@ namespace Demo.PlayerSpace
             if (_hasControl)
             {
                 _mover.AimConnon(GetHitPoint());            
-                if (Input.GetButton("Fire1") )
-                {
-                    _shooter.Shoot(GetHitPoint(), barrel.transform.position);
-                }
+                
+                _shooter.PermitShoot(GetHitPoint(), barrel.transform.position);
+                
             }
             
         }
@@ -83,6 +80,11 @@ namespace Demo.PlayerSpace
         private static Ray GetMouseRay ()
         {
             return Camera.main.ScreenPointToRay (Input.mousePosition);
+        }
+
+        public void HalfWayBonus()
+        {
+            
         }
     }
 }

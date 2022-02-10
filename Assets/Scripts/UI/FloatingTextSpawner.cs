@@ -8,33 +8,45 @@ namespace Demo.UI
 {
     public class FloatingTextSpawner : MonoBehaviour, IScoreReporter
     {
-        [SerializeField] ScoreText scoreTextPrefab = null;
+        [SerializeField] ScoreText baseScorePrefab = null;
+        [SerializeField] ScoreText twoXScorePrefab = null;
+        [SerializeField] ScoreText threeXScorePrefab = null;
         private Color textColor;
 
-        public void ScorePoints(int score, int multiplier)
+        public void ScorePoints(int score, int multiplier, int streak)
         {
-            Debug.Log("Spawner Scored " + score + " x " + multiplier );
-            Spawn(score, multiplier);
+            Spawn(score, multiplier, streak);
         }
 
-        public void Spawn (int score, int multiplier)
+        public void Spawn (int score, int multiplier, int streak)
 		{
+
+            ScoreText scoreTextInstance;
+
+            //ScoreText textPrefeb = new ScoreText();
+            score = score * multiplier;
             
             if (multiplier == 1)
             {
-                textColor = Color.cyan;
+                scoreTextInstance = Instantiate<ScoreText> (baseScorePrefab, transform);
+                scoreTextInstance.SetValue (score);
             }
             if (multiplier == 2)
             {
-                textColor = Color.yellow;
+                
+                scoreTextInstance = Instantiate<ScoreText> (twoXScorePrefab, transform);
+                scoreTextInstance.SetValue (score);
+                
             }
-            if (multiplier == 3)
+            if (multiplier >= 3)
             {
-                textColor = Color.red;
+                scoreTextInstance = Instantiate<ScoreText> (threeXScorePrefab, transform);
+                scoreTextInstance.SetValue (score);
             }
 
-            ScoreText scoreTextInstance = Instantiate<ScoreText> (scoreTextPrefab, transform);
-            scoreTextInstance.SetValue(score, textColor);
+            
 		}
+
+        
     }
 }

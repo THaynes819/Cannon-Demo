@@ -129,9 +129,9 @@ MonoBehaviour:
   thrustMax: 10
   thrustAdjustment: 10
   shootSounds: []
-  shootCooldown: 1
-  shootTimer: 0
-  canShoot: 1
+  shootCooldown: 1.5
+  _shootTimer: 0
+  _canShoot: 1
 --- !u!120 &6176350216801870460
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -243,7 +243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxMultiplier: 3
-  multiplierTimer: 5
+  multiplierTimer: 2.5
   maxStreak: 5
 --- !u!1 &3561597287815708117
 GameObject:

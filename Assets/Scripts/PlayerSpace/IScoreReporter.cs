@@ -7,6 +7,6 @@ namespace Demo.PlayerSpace
 {
     public interface IScoreReporter
     {
-        void ScorePoints(int score, int multiplier);
+        void ScorePoints(int score, int multiplier, int streak);
     }
 }

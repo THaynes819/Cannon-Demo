@@ -112,5 +112,10 @@ namespace Demo.Environment
         {
             
         }
+
+        public void HalfWayBonus()
+        {
+
+        }
     }
 }

@@ -47,6 +47,11 @@ namespace Demo.UI
         {
             complete.enabled = false;
         }
+
+        public void HalfWayBonus()
+        {
+            
+        }
     }
 }
 

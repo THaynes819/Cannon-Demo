@@ -7,6 +7,7 @@ namespace Demo.PlayerSpace
 {
     public interface ILevelCompleter
     {
+        void HalfWayBonus();
         void CompleteLevel();
         void StageLevel();
     }

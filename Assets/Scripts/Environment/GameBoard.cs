@@ -11,36 +11,67 @@ namespace Demo.Environment
         [Header("Board Coniguration")]
         [SerializeField] int rowTotal = 4;
         [SerializeField] int targetsPerRow = 4;
-        private int targetTotal;
-
         [Tooltip("Objects that must reset between levels")]
         [SerializeField] GameObject[] restageObjects = null;
-
         [SerializeField] float destroyDelay = 2.0f;
+        private int _startingTotal;
+        private int _targetTotal;
+        private int _halfTotal;
+        private ScoreKeeper _scorekeeper;
+
+        
 
 
         void Start()
         {
-            targetTotal = rowTotal * targetsPerRow;
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            _scorekeeper = player.GetComponent<ScoreKeeper>();
+            _startingTotal = rowTotal * targetsPerRow;
+            _targetTotal = _startingTotal;
+            _halfTotal = _startingTotal / 2;
         }
 
         void Update()
         {
-            
+
         }
 
         
 
         public void RemoveTarget(int value)
         {
-            targetTotal -= value;
+            _targetTotal -= value;
+
+            if (_targetTotal == _halfTotal)
+            {
+                Debug.Log("Game Board should Report Half");
+                ReportHalfCompleted();
+            }
             
-            if (targetTotal <= 0)
+            if (_targetTotal <= 0)
             {
                 ReportTargetsCompleted();
             }
         }
 
+        public void ReportHalfCompleted()
+        {
+            foreach (var completer in restageObjects)
+            {
+                if (completer.GetComponent<ILevelCompleter>() != null)
+                {
+                    completer.GetComponent<ILevelCompleter>().HalfWayBonus();
+                }
+
+                if (completer.GetComponentInChildren<ILevelCompleter>() != null)
+                {
+                    completer.GetComponentInChildren<ILevelCompleter>().HalfWayBonus();
+                }
+            }
+
+            //for each loop wasn't working with the player. May Remove completely. communicating with the scoreKeeper directly
+            _scorekeeper.HalfWayBonus();
+        }
         public void ReportTargetsCompleted()
         {
             foreach (var completer in restageObjects)
@@ -49,19 +80,32 @@ namespace Demo.Environment
                 {
                     completer.GetComponent<ILevelCompleter>().CompleteLevel();
                 }
+
+                if (completer.GetComponentInChildren<ILevelCompleter>() != null)
+                {
+                    completer.GetComponentInChildren<ILevelCompleter>().CompleteLevel();
+                }
             }
+
+            //for each loop wasn't working with the player. May Remove completely. communicating with the scoreKeeper directly
+            _scorekeeper.CompleteLevel();
         }
 
 
         public void CompleteLevel()
         {
             // Does Game Board need to do anything here?
-            Debug.Log("Targets complete");
+            
         }
 
         public void StageLevel()
         {
             // Game Board could regenerate/Instantiate Targets here for the level
+        }
+
+        public void HalfWayBonus()
+        {
+            
         }
     }
 

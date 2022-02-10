@@ -21,46 +21,57 @@ namespace Demo.PlayerSpace
         [Header("Timer Configuration")]
         //[SerializeField] float timerModifier = 0.2f;
         [SerializeField] float shootCooldown = 1.0f;
-        public float shootTimer = 0.0f;
-        private float destroyTimer = 1.5f;
-        private Vector3 originalSpawn;
-        public bool canShoot = true;
+        public float _shootTimer = 0.0f;
+        private float _destroyTimer = 1.5f;
+        private Vector3 _originalSpawn;
+        public bool _canShoot = true;
 
 
         void Start()
         {
-            originalSpawn = ballSpawnPoint.position;
-            shootTimer = 0f;
+            _originalSpawn = ballSpawnPoint.position;
+            _shootTimer = 0f;
         }
 
         void FixedUpdate()
         {
-            UpdateTimers();
+
         }
 
-        private void UpdateTimers()
+        public void PermitShoot(Vector3 hitPoint, Vector3 barrelPosition)
         {
-            if (shootTimer > 0f)
+            if (_shootTimer > 0f || !_canShoot)
             {
-                shootTimer -= Time.deltaTime;
+                _shootTimer -= Time.deltaTime;
             }
 
-            if (shootTimer <= 0.0f)
             {
-                canShoot = true;
-            }
+                    if (_shootTimer <= 0.0f || Mathf.Approximately(_shootTimer, 0f))
+                    {
+                        _shootTimer = 0f;
+                        //Debug.Log("You Can Shoot!");
+                        _canShoot = true;
 
+                        // uncomment bellow for auto shooting. 
+                        //TODO make this into a mode later
+                        //Shoot(hitPoint, barrelPosition);
+                    }
+                }
 
-            if (Mathf.Approximately(shootTimer, 0f))
-            {
-                shootTimer = 0;
-                canShoot = true;
-            }
+            if (Input.GetButton("Fire1") && _canShoot)
+                {
+                    // if (_shootTimer <= 0.0f || Mathf.Approximately(_shootTimer, 0f))
+                    // {
+                        //Debug.Log("You Can Shoot!");
+                        //_canShoot = true;
+                        Shoot(hitPoint, barrelPosition);
+                    //}
+                }
         }
 
         public void Shoot(Vector3 hitPoint, Vector3 barrelPosition)
         {
-            if (canShoot)
+            if (_canShoot)
             {
                 GameObject ball = Instantiate(ballPrefab.gameObject, ballSpawnPoint.position, ballSpawnPoint.rotation, ballParent); 
                 var clip = Random.Range(0, shootSounds.Length);
@@ -70,17 +81,16 @@ namespace Demo.PlayerSpace
                 
                 ball.GetComponent<Rigidbody>().velocity = ballSpawnPoint.transform.up * thrustAdjustment;
 
-                canShoot = false;
-                shootTimer = shootCooldown;
-                UpdateTimers();
+                _canShoot = false;
+                _shootTimer = shootCooldown;
             }
 
-            destroyTimer -= Time.deltaTime; // * timerModifier;
+            _destroyTimer -= Time.deltaTime; // * timerModifier;
         }
 
-        public float GetShootTimer()
+        public float GetShootFraction()
         {
-            return shootTimer;
+            return _shootTimer/shootCooldown;
         }
         
     }
