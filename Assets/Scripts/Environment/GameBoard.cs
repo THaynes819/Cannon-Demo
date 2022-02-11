@@ -44,7 +44,7 @@ namespace Demo.Environment
 
             if (_targetTotal == _halfTotal)
             {
-                Debug.Log("Game Board should Report Half");
+                //Debug.Log("Game Board should Report Half"); Working 2/11/2022
                 ReportHalfCompleted();
             }
             
@@ -62,11 +62,6 @@ namespace Demo.Environment
                 {
                     completer.GetComponent<ILevelCompleter>().HalfWayBonus();
                 }
-
-                if (completer.GetComponentInChildren<ILevelCompleter>() != null)
-                {
-                    completer.GetComponentInChildren<ILevelCompleter>().HalfWayBonus();
-                }
             }
 
             //for each loop wasn't working with the player. May Remove completely. communicating with the scoreKeeper directly
@@ -81,10 +76,6 @@ namespace Demo.Environment
                     completer.GetComponent<ILevelCompleter>().CompleteLevel();
                 }
 
-                if (completer.GetComponentInChildren<ILevelCompleter>() != null)
-                {
-                    completer.GetComponentInChildren<ILevelCompleter>().CompleteLevel();
-                }
             }
 
             //for each loop wasn't working with the player. May Remove completely. communicating with the scoreKeeper directly

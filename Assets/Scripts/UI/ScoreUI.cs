@@ -10,12 +10,10 @@ namespace Demo.UI
     public class ScoreUI : MonoBehaviour, ILevelCompleter
     {
         [SerializeField] TextMeshProUGUI score = null;
-        [SerializeField] TextMeshProUGUI streak = null;
-
-        [SerializeField] TextMeshProUGUI multiplier = null;
-        
+        [SerializeField] GameObject streak = null;
         [SerializeField] TextMeshProUGUI complete = null;
-        
+
+        [SerializeField] float streakDisplayTime = 2f;
 
         GameObject player;
         ScoreKeeper scoreKeeper;
@@ -26,7 +24,7 @@ namespace Demo.UI
             player = GameObject.FindGameObjectWithTag("Player");
             scoreKeeper = player.GetComponent<ScoreKeeper>();
             complete.enabled = false;
-
+            streak.SetActive(false);
             score.text = scoreKeeper.GetScore().ToString();
         }
 
@@ -34,12 +32,13 @@ namespace Demo.UI
         void Update()
         {
             score.text = scoreKeeper.GetScore().ToString();
-            streak.text = scoreKeeper.GetStreak().ToString();
-            multiplier.text = scoreKeeper.GetMultiplier().ToString();
+            
+            //multiplierValue.text = scoreKeeper.GetMultiplier().ToString();
         }
 
         public void CompleteLevel()
         {
+            Debug.Log("Complete should pop");
             complete.enabled = true;
         }
 
@@ -50,7 +49,24 @@ namespace Demo.UI
 
         public void HalfWayBonus()
         {
-            
+            streak.SetActive(true);
+            StartCoroutine(StreakBonus());
+        }
+        
+        private IEnumerator StreakBonus()
+        {
+            //Debug.Log("Score UI setting Bonus Active"); Working 2/11/2022
+            yield return new WaitForEndOfFrame();
+            StartCoroutine(DelayedHide());
+        }
+
+        private IEnumerator DelayedHide()
+        {
+            yield return new WaitWhile(()=>scoreKeeper.GetHasBonus());
+            if (streak.activeSelf)
+            {
+                streak.SetActive(false); 
+            }
         }
     }
 }

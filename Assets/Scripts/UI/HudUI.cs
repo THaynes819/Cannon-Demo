@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Demo.PlayerSpace;
+using TMPro;
 using UnityEngine;
 
 
@@ -11,7 +12,8 @@ namespace Demo.UI
     [SerializeField] RectTransform[] multiplierFields = null;
     [SerializeField] RectTransform timerBackground = null;
     [SerializeField] RectTransform shootTimer = null;
-
+    
+    [SerializeField] TextMeshProUGUI multiplierText = null;
     private GameObject _player;
     private ScoreKeeper _scoreKeeper;
     private Shooter _shooter;
@@ -41,9 +43,10 @@ namespace Demo.UI
             foreach (var multiplier in multiplierFields)
             {
                 multiplier.gameObject.SetActive(true);
+                multiplierText.text = _scoreKeeper.GetMultiplier().ToString();
             }
         }
-        timerBackground.localScale = new Vector3 (1, _scoreKeeper.GetTimerFraction(), 1);
+        timerBackground.localScale = new Vector3 (_scoreKeeper.GetTimerFraction(), 1, 1);
         
         shootTimer.localScale = new Vector3 (_shooter.GetShootFraction(),1,1);
     }

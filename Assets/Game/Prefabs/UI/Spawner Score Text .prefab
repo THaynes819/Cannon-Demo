@@ -48,4 +48,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d896734817da909499ef33ceeec6c672, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreTextPrefab: {fileID: 714314070946302481, guid: b5983ca81cdcba74dbf8791c1831326d, type: 3}
+  baseScorePrefab: {fileID: 714314070946302481, guid: b5983ca81cdcba74dbf8791c1831326d, type: 3}
+  twoXScorePrefab: {fileID: 714314070946302481, guid: 1485506a7f0b0b24ea7f200b4c043080, type: 3}
+  threeXScorePrefab: {fileID: 714314070946302481, guid: 640e94ede1cbf294cac4a4213d2dfac6, type: 3}
