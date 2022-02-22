@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Demo.PlayerSpace
+namespace Demo.Control
 {
     public class Aimer : MonoBehaviour
     {

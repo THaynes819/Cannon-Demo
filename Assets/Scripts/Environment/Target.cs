@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Demo.PlayerSpace;
+using Demo.Control;
 using Demo.Effects;
 
 namespace Demo.Environment

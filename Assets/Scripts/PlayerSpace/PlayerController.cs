@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Demo.Effects;
 using UnityEngine;
 
-namespace Demo.PlayerSpace
+namespace Demo.Control
 {
     public class PlayerController : MonoBehaviour, ILevelCompleter
     {
@@ -30,6 +30,12 @@ namespace Demo.PlayerSpace
 
         private void FixedUpdate()
         {
+            if (!_hasControl && Cursor.visible == true) return;
+            if (!_hasControl && Cursor.visible == false)
+            {
+                Cursor.visible = true;
+            }
+
             GetHitPoint();
             if (_hasControl)
             {
@@ -66,6 +72,21 @@ namespace Demo.PlayerSpace
             return lastValid;
         }
 
+        public void SetControl(bool controlValue)
+        {
+            
+            _hasControl = controlValue;
+            if (!_hasControl)
+            {
+                Cursor.visible = true;
+            }
+            Debug.Log("Setting control to " + _hasControl);
+        }
+
+        public bool GetHasControl()
+        {
+            return _hasControl;
+        }
         public void CompleteLevel()
         {
             Debug.Log("Congratulations, Load next level after this");

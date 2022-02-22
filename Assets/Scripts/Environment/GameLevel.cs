@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Demo.Effects;
-using Demo.PlayerSpace;
+using Demo.Control;
 using UnityEngine;
 
 
@@ -103,7 +103,7 @@ namespace Demo.Environment
 
         public void CompleteLevel()
         {
-            Debug.Log("Game Level complete");
+            //Debug.Log("Game Level complete");
             AudioManager.Instance.SetVolume(AudioManager.AudioChannel.Music, 0);
             AudioManager.Instance.Play(victorySound, transform, victoryVolume);
         }

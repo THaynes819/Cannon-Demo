@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Demo.Effects;
 using UnityEngine;
 
-namespace Demo.PlayerSpace
+namespace Demo.Control
 {
     public class Shooter : MonoBehaviour
     {
@@ -25,21 +25,23 @@ namespace Demo.PlayerSpace
         private float _destroyTimer = 1.5f;
         private Vector3 _originalSpawn;
         public bool _canShoot = true;
-
+        private PlayerController _playerController;
 
         void Start()
         {
+            _playerController = GetComponent<PlayerController>();
             _originalSpawn = ballSpawnPoint.position;
             _shootTimer = 0f;
         }
 
-        void FixedUpdate()
-        {
-
-        }
 
         public void PermitShoot(Vector3 hitPoint, Vector3 barrelPosition)
         {
+            if (!_playerController.GetHasControl())
+            {
+                _canShoot = false;
+                return;
+            }
             if (_shootTimer > 0f || !_canShoot)
             {
                 _shootTimer -= Time.deltaTime;
@@ -90,7 +92,7 @@ namespace Demo.PlayerSpace
 
         public float GetShootFraction()
         {
-            return _shootTimer/shootCooldown;
+            return _shootTimer/shootCooldown; 
         }
         
     }

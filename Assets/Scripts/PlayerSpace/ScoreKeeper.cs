@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using Demo.Core;
+using Demo.SceneManagement;
 
-namespace Demo.PlayerSpace
+namespace Demo.Control
 {
     public class ScoreKeeper : MonoBehaviour, ILevelCompleter
     {
         [SerializeField] int startingMaxMultiplier = 3;
         [SerializeField] float multiplierTimer = 5.0f;
         [SerializeField] int maxStreak = 5;
+        private string _name;
         private int _maxMultiplier;
         private int _score = 0;
         private int _scoreMultiplier = 1;
@@ -21,12 +24,8 @@ namespace Demo.PlayerSpace
         private float _currentTimer;
         private bool _hasStreak = false;
         private GameObject _spawner;
+        private SavingWrapper _savingWrapper;
 
-        //recieves score increases from other objects
-        public void IncreaseScore(int pointValue)
-        {
-            ApplyMultiplier(pointValue);
-        }
 
         public int GetScore()
         {
@@ -42,9 +41,18 @@ namespace Demo.PlayerSpace
         {
             return _hasHalfBonus;
         }
+
+        
+
+        //recieves score increases from other objects
+        public void IncreaseScore(int pointValue)
+        {
+            ApplyMultiplier(pointValue);
+        }
         public void CompleteLevel()
         {
-        
+            //Debug.Log("ScoreKeeper Submiting " + _name +  "'s score of " + _score);
+            GetComponent<HighScores>().SubmitScore(_name, _score);
         }
 
         public void StageLevel()
@@ -58,7 +66,7 @@ namespace Demo.PlayerSpace
             if (_streak >= maxStreak)
             {
                 _hasHalfBonus = true;
-                Debug.Log("Setting halfBonus to True: " + _hasHalfBonus);
+                //Debug.Log("Setting halfBonus to True: " + _hasHalfBonus);
             }
             
         }
@@ -106,35 +114,52 @@ namespace Demo.PlayerSpace
             }
         }
 
+        private void Awake() 
+        {
+            _spawner = GameObject.FindGameObjectWithTag("ScoreSpawner");
+            _savingWrapper = FindObjectOfType<SavingWrapper>();
+        }
+
         private void Start() 
         {
             _scoreMultiplier = 1;
             _maxMultiplier = startingMaxMultiplier;
-            _spawner = GameObject.FindGameObjectWithTag("ScoreSpawner");
+            
             _currentTimer = 0.0f;
+            if (_savingWrapper == null)
+            {
+                Debug.Log("saving Wrapper was null");
+                _savingWrapper = FindObjectOfType<SavingWrapper>();
+            }
+            SetName();
+        }
+
+        private void SetName()
+        {
+            _name = _savingWrapper.GetPlayerName();
         }
         private void ApplyMultiplier(int pointValue)
         {
             if (!_isMultiplying)
             {
                 SetMultiplier();
-                Debug.Log("Should be 1: Multiplier is " + _scoreMultiplier);
+                //Debug.Log("Should be 1: Multiplier is " + _scoreMultiplier);
                 _streak = 0;
                 _score += pointValue; 
                 ReportScoreEvent(pointValue, _scoreMultiplier, _streak);
                 SetTimer();
                 _isMultiplying = true;
-                Debug.Log("Wasn't multiplying. Multiplier is " + _scoreMultiplier);
+                //Debug.Log("Wasn't multiplying. Multiplier is " + _scoreMultiplier);
                 return;
             }
 
             else if (_isMultiplying)
             {
-                Debug.Log(" Multiplier before SetMultiplier is " + _scoreMultiplier);
+                //Debug.Log(" Multiplier before SetMultiplier is " + _scoreMultiplier);
                 SetMultiplier();
-                Debug.Log("Should be >1 Multiplier is " + _scoreMultiplier);
+                //Debug.Log("Should be >1 Multiplier is " + _scoreMultiplier);
                 int multipliedValue = pointValue * (_scoreMultiplier + _streak);
-                Debug.Log("Was multiplying. Multiplier is " + _scoreMultiplier);
+                //Debug.Log("Was multiplying. Multiplier is " + _scoreMultiplier);
                 // score is increased at this point
                 _score += multipliedValue; 
                 ReportScoreEvent(pointValue, _scoreMultiplier, _streak);
@@ -156,13 +181,13 @@ namespace Demo.PlayerSpace
 
         private void SetMultiplier()
         {
-            Debug.Log("Multiplier at start of SetMultiplier: " + _scoreMultiplier);
+            //Debug.Log("Multiplier at start of SetMultiplier: " + _scoreMultiplier);
 
             if (_hasHalfBonus)
             {
                 //Debug.Log("half bonus is " + _hasHalfBonus); Working 2/11/2022
                 _maxMultiplier = startingMaxMultiplier + 1;
-                Debug.Log("Max X: " + _maxMultiplier);
+                //Debug.Log("Max X: " + _maxMultiplier);
             }
             if (!_hasHalfBonus)
             {
@@ -172,7 +197,7 @@ namespace Demo.PlayerSpace
             //Applies the multiplier with each succful hit up to the max
             if (_scoreMultiplier < _maxMultiplier)
             {
-                Debug.Log("Should be >1: Multiplier is " + _scoreMultiplier);
+                //Debug.Log("Should be >1: Multiplier is " + _scoreMultiplier);
                 _scoreMultiplier++;
                 return;
             }
@@ -185,7 +210,7 @@ namespace Demo.PlayerSpace
             // ensures multiplier is never less than 0
             if (_scoreMultiplier <= 0) //removed !hasStreak condition to fix error
                 {
-                    Debug.Log("Error: Multiplier was 0. set to 1: " + _scoreMultiplier);
+                    //Debug.Log("Error: Multiplier was 0. set to 1: " + _scoreMultiplier);
                     _hasHalfBonus = false;
                     _scoreMultiplier = 1;
                     return;
@@ -211,7 +236,7 @@ namespace Demo.PlayerSpace
                 _currentTimer = 0;
                 _isMultiplying = false;
                 _scoreMultiplier = 1;
-                Debug.Log("Timer hit 0. Multiplier is " + _scoreMultiplier);
+                //Debug.Log("Timer hit 0. Multiplier is " + _scoreMultiplier);
             }
         }
     }

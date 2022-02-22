@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Demo.PlayerSpace;
+using Demo.Control;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +38,7 @@ namespace Demo.UI
 
         public void CompleteLevel()
         {
-            Debug.Log("Complete should pop");
+            //Debug.Log("Complete should pop");
             complete.enabled = true;
         }
 

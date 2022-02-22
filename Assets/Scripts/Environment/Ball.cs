@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Demo.PlayerSpace;
+using Demo.Control;
 using UnityEngine;
 
 namespace Demo.Environment
