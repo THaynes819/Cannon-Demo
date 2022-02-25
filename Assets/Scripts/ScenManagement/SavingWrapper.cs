@@ -58,6 +58,11 @@ namespace Demo.SceneManagement
             ContinueGame();
         }
 
+        public void LoadNextScene(int level)
+        {
+            StartCoroutine(LoadScene(GetCurrentSave(), level));
+        }
+
         private void SetCurrentSave(string saveFile)
         {  
             //Debug.Log("SetCurrentSave set to " + saveFile);              

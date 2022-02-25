@@ -27,6 +27,12 @@ namespace Demo.UI
             _panelFader = GetComponent<UIPanelFader>();
         }
 
+        private void AddNewScore()
+        {
+            GameObject scoreInstance = Instantiate(scorePrefab, transform.position, Quaternion.identity, scoresParent);
+            DrawScores();
+            
+        }
         public void DrawScores()
         {
             Debug.Log("Drawing Scores");
@@ -34,16 +40,15 @@ namespace Demo.UI
             {
                 Instantiate(scorePrefab,transform.position, Quaternion.identity, scoresParent);
             }
-            _panelFader.ShowScores();
+            StartCoroutine(Fade());
+            
         }
 
-        private void AddNewScore()
+        private IEnumerator Fade()
         {
-            Debug.Log("AddNewScore Called. Instantiating");
-            GameObject scoreInstance = Instantiate(scorePrefab, transform.position, Quaternion.identity, scoresParent);
-            Debug.Log("AddNewScore Drawing");
-            DrawScores();
-            
+            Debug.Log("Fading in and out hopefully");
+            yield return new WaitForEndOfFrame();
+            _panelFader.FadeInOutScore();
         }
 
     }

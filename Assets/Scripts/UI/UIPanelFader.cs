@@ -7,7 +7,7 @@ namespace Demo.UI
 {
     public class UIPanelFader : MonoBehaviour
     {
-        [SerializeField] float scoreFadeTime = 0.4f;
+        [SerializeField] float scoreFadeTime = 1.5f;
         private Coroutine _currentActiveFade = null;
         private CanvasGroup _canvasGroup;
 
@@ -22,7 +22,17 @@ namespace Demo.UI
             StartCoroutine(FadeInPanel());
         }
 
-    private IEnumerator FadeInPanel()
+        public void FadeScore()
+        {
+            StartCoroutine(FadeOutPanel());
+        }
+
+        public void FadeInOutScore()
+        {
+            StartCoroutine(FadeInOutPanel());
+        }
+
+        private IEnumerator FadeInPanel()
         {
             return Fade (1, scoreFadeTime);
             
@@ -31,6 +41,14 @@ namespace Demo.UI
         private IEnumerator FadeOutPanel()
         {
             return Fade (0, scoreFadeTime);
+        }
+
+        private IEnumerator FadeInOutPanel()
+        {
+            yield return Fade (1, scoreFadeTime);
+            Debug.Log("High Score Panel!");
+            yield return new WaitForSeconds(scoreFadeTime);
+            yield return Fade (0, scoreFadeTime);
         }
 
         private IEnumerator Fade(float target, float time)

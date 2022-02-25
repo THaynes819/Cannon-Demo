@@ -8,9 +8,8 @@ using UnityEngine;
 
 namespace Demo.Environment
 {
-    public class GameLevel : MonoBehaviour, ILevelCompleter
+    public class LevelFXManager : MonoBehaviour, ILevelCompleter
     {
-        [SerializeField] int levelNumber = 1;
         [SerializeField] AudioClip levelMusic = null;
         [SerializeField] AudioClip victorySound = null;
         [SerializeField] float victoryVolume = 0.1f;

@@ -8,25 +8,26 @@ namespace Demo.Environment
 {
     public class GameBoard : MonoBehaviour, ILevelCompleter
     {
-        [Header("Board Coniguration")]
-        [SerializeField] int rowTotal = 4;
-        [SerializeField] int targetsPerRow = 4;
-        [Tooltip("Objects that must reset between levels")]
+        
+        [Tooltip("Objects that reset between levels")]
         [SerializeField] GameObject[] restageObjects = null;
         [SerializeField] float destroyDelay = 2.0f;
+
+        //maybe remove this variable...
+        private int levelNumber = 1;
         private int _startingTotal;
         private int _targetTotal;
         private int _halfTotal;
+        private int _rowTotal = 4;
+        private int _targetsPerRow = 4;
         private ScoreKeeper _scorekeeper;
-
-        
 
 
         void Start()
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
             _scorekeeper = player.GetComponent<ScoreKeeper>();
-            _startingTotal = rowTotal * targetsPerRow;
+            _startingTotal = _rowTotal * _targetsPerRow;
             _targetTotal = _startingTotal;
             _halfTotal = _startingTotal / 2;
         }
